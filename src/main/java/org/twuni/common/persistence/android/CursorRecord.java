@@ -19,7 +19,7 @@ public class CursorRecord implements Record {
 
 	@Override
 	public byte getByte( String key ) {
-		return (byte) ( 0xFF & getInt( key ) );
+		return (byte) ( 0xFF & getShort( key ) );
 	}
 
 	@Override
