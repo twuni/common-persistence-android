@@ -1,7 +1,5 @@
 package org.twuni.common.persistence.android;
 
-import java.util.Set;
-
 import org.twuni.common.persistence.Migration;
 
 import android.content.Context;
@@ -10,9 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database extends SQLiteOpenHelper {
 
-	private final Set<Migration> history;
+	private final Migration [] history;
 
-	public Database( Context context, String name, int version, Set<Migration> history ) {
+	public Database( Context context, String name, int version, Migration... history ) {
 		super( context, name, null, version );
 		this.history = history;
 	}
@@ -58,11 +56,9 @@ public class Database extends SQLiteOpenHelper {
 
 		} else if( oldVersion > newVersion ) {
 
-			Migration [] reversed = history.toArray( new Migration [0] );
+			for( int i = 0; i < history.length; i++ ) {
 
-			for( int i = 0; i < reversed.length; i++ ) {
-
-				Migration migration = reversed[reversed.length - 1 - i];
+				Migration migration = history[history.length - 1 - i];
 
 				int sequence = migration.getSequence();
 
