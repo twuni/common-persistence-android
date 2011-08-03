@@ -1,6 +1,9 @@
 package org.twuni.common.persistence.android;
 
+import java.util.List;
+
 import org.twuni.common.persistence.Migration;
+import org.twuni.common.persistence.Transaction;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,41 +38,14 @@ public class Database extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade( SQLiteDatabase database, int oldVersion, int newVersion ) {
-
-		if( oldVersion == newVersion ) {
+		List<Transaction> transactions = Migration.migrate( oldVersion, newVersion, history );
+		if( transactions.isEmpty() ) {
 			return;
 		}
-
 		Connection connection = new Connection( database );
-
-		if( oldVersion < newVersion ) {
-
-			for( Migration migration : history ) {
-
-				int sequence = migration.getSequence();
-
-				if( oldVersion < sequence && sequence <= newVersion ) {
-					connection.run( migration.forward() );
-				}
-
-			}
-
-		} else if( oldVersion > newVersion ) {
-
-			for( int i = 0; i < history.length; i++ ) {
-
-				Migration migration = history[history.length - 1 - i];
-
-				int sequence = migration.getSequence();
-
-				if( newVersion < sequence && sequence <= oldVersion ) {
-					connection.run( migration.reverse() );
-				}
-
-			}
-
+		for( Transaction transaction : transactions ) {
+			connection.run( transaction );
 		}
-
 	}
 
 }
