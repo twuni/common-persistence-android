@@ -26,4 +26,8 @@ public class Connection implements org.twuni.common.persistence.Connection {
 		}
 	}
 
+	public void close() {
+		database.close();
+	}
+
 }
