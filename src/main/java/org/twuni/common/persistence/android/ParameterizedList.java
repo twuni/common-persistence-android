@@ -40,5 +40,14 @@ public class ParameterizedList extends ArrayList<String> implements Parameterize
 	public void setParameter( int index, short value ) {
 		add( index, Short.valueOf( value ).toString() );
 	}
+	
+	@Override
+	public void add( int index, String element ) {
+		if( index >= size() ) {
+			super.add( element );
+		} else {
+			super.add( index, element );
+		}
+	}
 
 }
